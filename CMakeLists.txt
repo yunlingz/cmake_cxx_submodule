@@ -14,11 +14,17 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-project(fvo
-  VERSION 0.1.6
+project(example
+  VERSION 0.0.1
   LANGUAGES CXX)
 
 include(${PROJECT_SOURCE_DIR}/cmake/CXX17Enforce.cmake)
 message(STATUS "${CMAKE_CXX_FLAGS}")
 message(STATUS "${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS "${CMAKE_CXX_FLAGS_RELEASE}")
+include(${PROJECT_SOURCE_DIR}/cmake/SubModule.cmake)
+
+add_bin(TARGET_NAME add_test LINK_TO sub)
+
+add_lib(TARGET_NAME add LINK_TO)
+add_lib(TARGET_NAME sub LINK_TO add)
