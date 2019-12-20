@@ -12,14 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# get_directory_property(HAS_PARENT PARENT_DIRECTORY)
-
-# include_directories(${PROJECT_SOURCE_DIR}/include)
-# if(NOT HAS_PARENT)
-#   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}
-#     DESTINATION include)
-# endif()
-
 if(NOT (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
   message(WARNING "We do not encourage you to build ${PROJECT_NAME} as a subproject")
 endif()
