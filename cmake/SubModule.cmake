@@ -22,8 +22,6 @@ if(EXISTS ${PROJECT_SOURCE_DIR}/include)
     DESTINATION ${CMAKE_INSTALL_PREFIX})
 endif()
 
-message(STATUS "???:${CMAKE_INSTALL_PREFIX}")
-
 # rpath handling
 set(CMAKE_MACOSX_RPATH ON)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
@@ -40,6 +38,10 @@ function(add_lib)
   cmake_parse_arguments(ADD_LIB
     "" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
+  if(NOT EXISTS ${PROJECT_SOURCE_DIR}/lib/${ADD_LIB_TARGET_NAME})
+    message(WARNING "Target lib ${ADD_LIB_TARGET_NAME} does not exists")
+    return()
+  endif()
   aux_source_directory(${PROJECT_SOURCE_DIR}/lib/${ADD_LIB_TARGET_NAME} SRC_LIST)
 
   if(BUILD_SHARED_LIBS)
@@ -72,6 +74,10 @@ function(add_bin)
   cmake_parse_arguments(ADD_BIN
     "" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
+  if(NOT EXISTS ${PROJECT_SOURCE_DIR}/bin/${ADD_BIN_TARGET_NAME})
+    message(WARNING "Target bin ${ADD_BIN_TARGET_NAME} does not exists")
+    return()
+  endif()
   aux_source_directory(${PROJECT_SOURCE_DIR}/bin/${ADD_BIN_TARGET_NAME} SRC_LIST)
   add_executable(${ADD_BIN_TARGET_NAME} ${SRC_LIST})
   target_link_libraries(${ADD_BIN_TARGET_NAME} ${ADD_BIN_LINK_TO})

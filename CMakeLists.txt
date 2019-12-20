@@ -30,6 +30,8 @@ option(BUILD_SHARED_LIBS "Create shared libraries" ON)
 include(${PROJECT_SOURCE_DIR}/cmake/SubModule.cmake)
 
 add_bin(TARGET_NAME sub_test LINK_TO sub)
+add_lib(TARGET_NAME some_bin_not_exist)
 
 add_lib(TARGET_NAME add LINK_TO)
 add_lib(TARGET_NAME sub LINK_TO add)
+add_lib(TARGET_NAME some_lib_not_exist)
