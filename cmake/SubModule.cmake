@@ -31,7 +31,7 @@ elseif(UNIX)
   set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
 endif()
 
-# add shared library target
+# add library target
 function(add_lib)
   set(ONE_VALUE_ARGS TARGET_NAME)
   set(MULTI_VALUE_ARGS LINK_TO)
