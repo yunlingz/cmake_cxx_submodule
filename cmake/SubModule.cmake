@@ -18,9 +18,11 @@ endif()
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/include)
   include_directories(${PROJECT_SOURCE_DIR}/include)
-  install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}
-    DESTINATION include)
+  install(DIRECTORY ${PROJECT_SOURCE_DIR}/include
+    DESTINATION ${CMAKE_INSTALL_PREFIX})
 endif()
+
+message(STATUS "???:${CMAKE_INSTALL_PREFIX}")
 
 # rpath handling
 set(CMAKE_MACOSX_RPATH ON)
