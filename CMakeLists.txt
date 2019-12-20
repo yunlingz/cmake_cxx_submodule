@@ -18,10 +18,14 @@ project(example
   VERSION 0.0.1
   LANGUAGES CXX)
 
+set(REQUIRES_RTTI OFF CACHE STRING "")
+set(REQUIRES_MARCH_NATIVE OFF CACHE STRING "")
 include(${PROJECT_SOURCE_DIR}/cmake/CXX17Enforce.cmake)
+
 message(STATUS "${CMAKE_CXX_FLAGS}")
 message(STATUS "${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS "${CMAKE_CXX_FLAGS_RELEASE}")
+
 include(${PROJECT_SOURCE_DIR}/cmake/SubModule.cmake)
 
 add_bin(TARGET_NAME sub_test LINK_TO sub)

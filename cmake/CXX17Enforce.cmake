@@ -89,11 +89,13 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
 
   # basic release flags
   # -----------------------------------------------------------------
-  # -march=native -O2 -DNDEBUG -fomit-frame-pointer
+  # (-march=native) -O2 -DNDEBUG -fomit-frame-pointer
   # -----------------------------------------------------------------
-  check_cxx_compiler_flag("-march=native" CXX_COMPILER_HAS_MARCH_NATIVE)
-  if(CXX_COMPILER_HAS_MARCH_NATIVE)
-    list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-march=native")
+  if(REQUIRES_MARCH_NATIVE)
+    check_cxx_compiler_flag("-march=native" CXX_COMPILER_HAS_MARCH_NATIVE)
+    if(CXX_COMPILER_HAS_MARCH_NATIVE)
+      list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-march=native")
+    endif()
   endif()
 
   check_cxx_compiler_flag("-O2" CXX_COMPILER_HAS_O2)
