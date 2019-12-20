@@ -2,4 +2,4 @@
 
 ## to-do
 
-* auto pkg-config file generator
+- [x] auto pkg-config file generator
