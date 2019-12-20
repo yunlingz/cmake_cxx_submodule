@@ -12,17 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-get_directory_property(HAS_PARENT PARENT_DIRECTORY)
+# get_directory_property(HAS_PARENT PARENT_DIRECTORY)
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
-if(NOT HAS_PARENT)
+# include_directories(${PROJECT_SOURCE_DIR}/include)
+# if(NOT HAS_PARENT)
+#   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}
+#     DESTINATION include)
+# endif()
+
+if(NOT (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
+  message(WARNING "We do not encourage you to build ${PROJECT_NAME} as a subproject")
+endif()
+
+if(EXISTS ${PROJECT_SOURCE_DIR}/include)
+  include_directories(${PROJECT_SOURCE_DIR}/include)
   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}
     DESTINATION include)
 endif()
 
 # rpath handling
+set(CMAKE_MACOSX_RPATH ON)
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 if(APPLE)
-  set(CMAKE_MACOSX_RPATH ON)
+  set(CMAKE_INSTALL_RPATH "@loader_path/../lib")
+elseif(UNIX)
+  set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
 endif()
 
 # add shared library target
@@ -32,15 +46,9 @@ function(add_lib)
   cmake_parse_arguments(ADD_LIB
     "" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
-  if(APPLE)
-    SET(CMAKE_INSTALL_RPATH "@loader_path")
-  elseif(UNIX)
-    SET(CMAKE_INSTALL_RPATH "$ORIGIN")
-  endif()
-
   aux_source_directory(${PROJECT_SOURCE_DIR}/lib/${ADD_LIB_TARGET_NAME} SRC_LIST)
 
-  if(NOT HAS_PARENT)
+  if(BUILD_SHARED_LIBS)
     add_library(${ADD_LIB_TARGET_NAME} SHARED ${SRC_LIST})
     set_target_properties(${ADD_LIB_TARGET_NAME} PROPERTIES
       VERSION ${PROJECT_VERSION}
@@ -51,10 +59,15 @@ function(add_lib)
 
   target_link_libraries(${ADD_LIB_TARGET_NAME} ${ADD_LIB_LINK_TO})
 
-  if(NOT HAS_PARENT)
-    install(TARGETS ${ADD_LIB_TARGET_NAME} LIBRARY
-      DESTINATION lib
-      COMPONENT ${ADD_LIB_TARGET_NAME})
+  install(TARGETS ${ADD_LIB_TARGET_NAME} LIBRARY
+    DESTINATION lib
+    COMPONENT ${ADD_LIB_TARGET_NAME})
+
+  if(BUILD_SHARED_LIBS)
+    configure_file(${PROJECT_SOURCE_DIR}/cmake/libtemplate.pc.in
+      lib${ADD_LIB_TARGET_NAME}.pc @ONLY)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${ADD_LIB_TARGET_NAME}.pc
+      DESTINATION lib/pkgconfig)
   endif()
 endfunction()
 
@@ -65,19 +78,11 @@ function(add_bin)
   cmake_parse_arguments(ADD_BIN
     "" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
-  if(APPLE)
-    SET(CMAKE_INSTALL_RPATH "@loader_path/../lib")
-  elseif(UNIX)
-    SET(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-  endif()
+  aux_source_directory(${PROJECT_SOURCE_DIR}/bin/${ADD_BIN_TARGET_NAME} SRC_LIST)
+  add_executable(${ADD_BIN_TARGET_NAME} ${SRC_LIST})
+  target_link_libraries(${ADD_BIN_TARGET_NAME} ${ADD_BIN_LINK_TO})
 
-  if(NOT HAS_PARENT)
-    aux_source_directory(${PROJECT_SOURCE_DIR}/bin/${ADD_BIN_TARGET_NAME} SRC_LIST)
-    add_executable(${ADD_BIN_TARGET_NAME} ${SRC_LIST})
-    target_link_libraries(${ADD_BIN_TARGET_NAME} ${ADD_BIN_LINK_TO})
-
-    install(TARGETS ${ADD_BIN_TARGET_NAME} RUNTIME
-      DESTINATION bin
-      COMPONENT ${ADD_BIN_TARGET_NAME})
-  endif()
+  install(TARGETS ${ADD_BIN_TARGET_NAME} RUNTIME
+    DESTINATION bin
+    COMPONENT ${ADD_BIN_TARGET_NAME})
 endfunction()

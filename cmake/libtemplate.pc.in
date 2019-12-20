@@ -1,0 +1,11 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+includedir=${prefix}/include
+libdir=${exec_prefix}/lib
+
+Name: lib@ADD_LIB_TARGET_NAME@
+Description: The @ADD_LIB_TARGET_NAME@ dynamic library
+Version: @PROJECT_VERSION@
+
+Cflags: -I${includedir}
+Libs: -L${libdir} -l@ADD_LIB_TARGET_NAME@
