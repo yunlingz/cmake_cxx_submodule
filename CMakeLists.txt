@@ -19,7 +19,6 @@ project(example
   LANGUAGES CXX)
 
 option(REQUIRES_RTTI "Build with RTTI enabled" OFF)
-option(REQUIRES_MARCH_NATIVE "Build with -march=native" OFF)
 include(${PROJECT_SOURCE_DIR}/cmake/CXX17Enforce.cmake)
 
 message(STATUS "${CMAKE_CXX_FLAGS}")
@@ -30,8 +29,8 @@ option(BUILD_SHARED_LIBS "Create shared libraries" ON)
 include(${PROJECT_SOURCE_DIR}/cmake/SubModule.cmake)
 
 add_bin(TARGET_NAME sub_test LINK_TO example_sub)
-add_lib(TARGET_NAME some_bin_not_exist) # should trigger warning
+# add_lib(TARGET_NAME some_bin_not_exist) # should trigger warning
 
 add_lib(TARGET_NAME example_add LINK_TO)
 add_lib(TARGET_NAME example_sub LINK_TO example_add)
-add_lib(TARGET_NAME some_lib_not_exist) # should trigger warning
+# add_lib(TARGET_NAME some_lib_not_exist) # should trigger warning
