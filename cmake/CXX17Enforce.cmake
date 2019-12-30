@@ -70,15 +70,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     endif()
   endif()
 
-  # avoid temporary files
-  # -----------------------------------------------------------------
-  # -pipe
-  # -----------------------------------------------------------------
-  check_cxx_compiler_flag("-pipe" CXX_COMPILER_HAS_PIPE)
-  if(CXX_COMPILER_HAS_PIPE)
-    list(APPEND CUSTOM_CMAKE_CXX_FLAGS "-pipe")
-  endif()
-
   string(REPLACE ";" " " CUSTOM_CMAKE_CXX_FLAGS "${CUSTOM_CMAKE_CXX_FLAGS}")
   set(CMAKE_CXX_FLAGS "${CUSTOM_CMAKE_CXX_FLAGS}")
 
@@ -98,16 +89,18 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
 
   # basic release flags
   # -----------------------------------------------------------------
-  # -march=native -O3 -DNDEBUG -fomit-frame-pointer
+  # (-march=native) -O2 -DNDEBUG -fomit-frame-pointer
   # -----------------------------------------------------------------
-  check_cxx_compiler_flag("-march=native" CXX_COMPILER_HAS_MARCH_NATIVE)
-  if(CXX_COMPILER_HAS_MARCH_NATIVE)
-    list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-march=native")
+  if(REQUIRES_MARCH_NATIVE)
+    check_cxx_compiler_flag("-march=native" CXX_COMPILER_HAS_MARCH_NATIVE)
+    if(CXX_COMPILER_HAS_MARCH_NATIVE)
+      list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-march=native")
+    endif()
   endif()
 
-  check_cxx_compiler_flag("-O3" CXX_COMPILER_HAS_O3)
-  if(CXX_COMPILER_HAS_O3)
-    list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-O3")
+  check_cxx_compiler_flag("-O2" CXX_COMPILER_HAS_O2)
+  if(CXX_COMPILER_HAS_O2)
+    list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-O2")
   endif()
 
   check_cxx_compiler_flag("-DNDEBUG" CXX_COMPILER_HAS_DNDEBUG)
