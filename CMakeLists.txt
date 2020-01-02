@@ -19,7 +19,8 @@ project(example
   LANGUAGES CXX)
 
 option(REQUIRES_RTTI "Build with RTTI enabled" OFF)
-option(REQUIRES_MARCH_NATIVE "Build with -march=native" OFF)
+option(REQUIRES_PIPE "Build with -pipe" ON)
+option(REQUIRES_MARCH_NATIVE "Build with -march=native" ON)
 include(${PROJECT_SOURCE_DIR}/cmake/CXX17Enforce.cmake)
 
 message(STATUS "${CMAKE_CXX_FLAGS}")

@@ -70,6 +70,17 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     endif()
   endif()
 
+  # enable pipe
+  # -----------------------------------------------------------------
+  # (-pipe)
+  # -----------------------------------------------------------------
+  if(REQUIRES_PIPE)
+    check_cxx_compiler_flag("-pipe" CXX_COMPILER_HAS_PIPE)
+    if(CXX_COMPILER_HAS_PIPE)
+      list(APPEND CUSTOM_CMAKE_CXX_FLAGS "-pipe")
+    endif()
+  endif()
+
   string(REPLACE ";" " " CUSTOM_CMAKE_CXX_FLAGS "${CUSTOM_CMAKE_CXX_FLAGS}")
   set(CMAKE_CXX_FLAGS "${CUSTOM_CMAKE_CXX_FLAGS}")
 
@@ -89,7 +100,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
 
   # basic release flags
   # -----------------------------------------------------------------
-  # (-march=native) -O2 -DNDEBUG -fomit-frame-pointer
+  # (-march=native) -O3 -DNDEBUG -fomit-frame-pointer
   # -----------------------------------------------------------------
   if(REQUIRES_MARCH_NATIVE)
     check_cxx_compiler_flag("-march=native" CXX_COMPILER_HAS_MARCH_NATIVE)
@@ -98,9 +109,9 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     endif()
   endif()
 
-  check_cxx_compiler_flag("-O2" CXX_COMPILER_HAS_O2)
-  if(CXX_COMPILER_HAS_O2)
-    list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-O2")
+  check_cxx_compiler_flag("-O3" CXX_COMPILER_HAS_O3)
+  if(CXX_COMPILER_HAS_O3)
+    list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-O3")
   endif()
 
   check_cxx_compiler_flag("-DNDEBUG" CXX_COMPILER_HAS_DNDEBUG)
@@ -115,7 +126,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
 
   # extra release flags
   # -----------------------------------------------------------------
-  # -fstack-protector-strong -fno-plt
+  # -fstack-protector-strong -fno-plt -flto
   # -----------------------------------------------------------------
   check_cxx_compiler_flag("-fstack-protector-strong" CXX_COMPILER_HAS_FSTACK_PROTECTOR_STRONG)
   if(CXX_COMPILER_HAS_FSTACK_PROTECTOR_STRONG)
@@ -125,6 +136,11 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
   check_cxx_compiler_flag("-fno-plt" CXX_COMPILER_HAS_FNO_PLT)
   if(CXX_COMPILER_HAS_FNO_PLT)
     list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-fno-plt")
+  endif()
+
+  check_cxx_compiler_flag("-flto" CXX_COMPILER_HAS_FLTO)
+  if(CXX_COMPILER_HAS_FLTO)
+    list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-flto")
   endif()
 
   string(REPLACE ";" " " CUSTOM_CMAKE_CXX_FLAGS_DEBUG "${CUSTOM_CMAKE_CXX_FLAGS_DEBUG}")
