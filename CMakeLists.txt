@@ -18,16 +18,12 @@ project(example
   VERSION 0.0.1
   LANGUAGES CXX)
 
-option(REQUIRES_RTTI "Build with RTTI enabled" OFF)
-option(REQUIRES_PIPE "Enable pipe" ON)
-option(REQUIRES_MARCH_NATIVE "Build with -march=native" ON)
 include(${PROJECT_SOURCE_DIR}/cmake/CXX17Enforce.cmake)
 
 message(STATUS "${CMAKE_CXX_FLAGS}")
 message(STATUS "${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS "${CMAKE_CXX_FLAGS_RELEASE}")
 
-option(BUILD_SHARED_LIBS "Create shared libraries" ON)
 include(${PROJECT_SOURCE_DIR}/cmake/SubModule.cmake)
 
 add_bin(TARGET_NAME sub_test LINK_TO example_sub)
