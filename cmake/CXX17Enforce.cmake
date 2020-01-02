@@ -70,6 +70,17 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     endif()
   endif()
 
+  # enable pipe
+  # -----------------------------------------------------------------
+  # (-pipe)
+  # -----------------------------------------------------------------
+  if(REQUIRES_PIPE)
+    check_cxx_compiler_flag("-pipe" CXX_COMPILER_HAS_PIPE)
+    if(CXX_COMPILER_HAS_PIPE)
+      list(APPEND CUSTOM_CMAKE_CXX_FLAGS "-pipe")
+    endif()
+  endif()
+
   string(REPLACE ";" " " CUSTOM_CMAKE_CXX_FLAGS "${CUSTOM_CMAKE_CXX_FLAGS}")
   set(CMAKE_CXX_FLAGS "${CUSTOM_CMAKE_CXX_FLAGS}")
 
