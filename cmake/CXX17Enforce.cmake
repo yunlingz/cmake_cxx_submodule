@@ -89,8 +89,14 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
 
   # basic release flags
   # -----------------------------------------------------------------
-  # (-march=native) -O2 -DNDEBUG -fomit-frame-pointer
+  # -DNDEBUG
+  # (-march=native) -O2 -ftree-vectorize -fomit-frame-pointer
   # -----------------------------------------------------------------
+  check_cxx_compiler_flag("-DNDEBUG" CXX_COMPILER_HAS_DNDEBUG)
+  if(CXX_COMPILER_HAS_DNDEBUG)
+    list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG")
+  endif()
+
   if(REQUIRES_MARCH_NATIVE)
     check_cxx_compiler_flag("-march=native" CXX_COMPILER_HAS_MARCH_NATIVE)
     if(CXX_COMPILER_HAS_MARCH_NATIVE)
@@ -103,9 +109,9 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-O2")
   endif()
 
-  check_cxx_compiler_flag("-DNDEBUG" CXX_COMPILER_HAS_DNDEBUG)
-  if(CXX_COMPILER_HAS_DNDEBUG)
-    list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG")
+  check_cxx_compiler_flag("-ftree-vectorize" CXX_COMPILER_HAS_FTREE_VECTORIZE)
+  if(CXX_COMPILER_HAS_FTREE_VECTORIZE)
+    list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-ftree-vectorize")
   endif()
 
   check_cxx_compiler_flag("-fomit-frame-pointer" CXX_COMPILER_HAS_FOMIT_FRAME_POINTER)
