@@ -1,4 +1,4 @@
-# Copyright 2017-2020 chuling <meetchuling@outlook.com>
+# Copyright 2020 chuling <meetchuling@outlook.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,20 +13,12 @@
 # limitations under the License.
 
 # please follow the google c++ style guide
-# unless an exception is listed below
 # see https://google.github.io/styleguide/cppguide.html
 Language: Cpp
 BasedOnStyle: Google
 
 # eighty column rule
 ColumnLimit: 80
-
-# indent 4 spaces at a time
-UseTab: Never
-AccessModifierOffset: -4
-ConstructorInitializerIndentWidth: 4
-ContinuationIndentWidth: 4
-IndentWidth: 4
 
 # modern c++
 # currently, code should target c++17

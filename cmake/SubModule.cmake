@@ -13,76 +13,76 @@
 # limitations under the License.
 
 if(NOT (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
-    message(WARNING "We do not encourage you to build ${PROJECT_NAME} as a subproject")
+  message(WARNING "We do not encourage you to build ${PROJECT_NAME} as a subproject")
 endif()
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/include)
-    include_directories(${PROJECT_SOURCE_DIR}/include)
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/include
-        DESTINATION ${CMAKE_INSTALL_PREFIX})
+  include_directories(${PROJECT_SOURCE_DIR}/include)
+  install(DIRECTORY ${PROJECT_SOURCE_DIR}/include
+    DESTINATION ${CMAKE_INSTALL_PREFIX})
 endif()
 
 # rpath handling
 set(CMAKE_MACOSX_RPATH ON)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 if(APPLE)
-    set(CMAKE_INSTALL_RPATH "@loader_path/../lib")
+  set(CMAKE_INSTALL_RPATH "@loader_path/../lib")
 elseif(UNIX)
-    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+  set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
 endif()
 
 # add library target
 function(add_lib)
-    set(ONE_VALUE_ARGS TARGET_NAME)
-    set(MULTI_VALUE_ARGS LINK_TO)
-    cmake_parse_arguments(ADD_LIB
-        "" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
+  set(ONE_VALUE_ARGS TARGET_NAME)
+  set(MULTI_VALUE_ARGS LINK_TO)
+  cmake_parse_arguments(ADD_LIB
+    "" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
-    if(NOT EXISTS ${PROJECT_SOURCE_DIR}/lib/${ADD_LIB_TARGET_NAME})
-        message(WARNING "Target lib ${ADD_LIB_TARGET_NAME} does not exists")
-        return()
-    endif()
-    aux_source_directory(${PROJECT_SOURCE_DIR}/lib/${ADD_LIB_TARGET_NAME} SRC_LIST)
+  if(NOT EXISTS ${PROJECT_SOURCE_DIR}/lib/${ADD_LIB_TARGET_NAME})
+    message(WARNING "Target lib ${ADD_LIB_TARGET_NAME} does not exists")
+    return()
+  endif()
+  aux_source_directory(${PROJECT_SOURCE_DIR}/lib/${ADD_LIB_TARGET_NAME} SRC_LIST)
 
-    if(BUILD_SHARED_LIBS)
-        add_library(${ADD_LIB_TARGET_NAME} SHARED ${SRC_LIST})
-        set_target_properties(${ADD_LIB_TARGET_NAME} PROPERTIES
-            VERSION ${PROJECT_VERSION}
-            SOVERSION ${PROJECT_VERSION_MAJOR})
-    else()
-        add_library(${ADD_LIB_TARGET_NAME} STATIC ${SRC_LIST})
-    endif()
+  if(BUILD_SHARED_LIBS)
+    add_library(${ADD_LIB_TARGET_NAME} SHARED ${SRC_LIST})
+    set_target_properties(${ADD_LIB_TARGET_NAME} PROPERTIES
+      VERSION ${PROJECT_VERSION}
+      SOVERSION ${PROJECT_VERSION_MAJOR})
+  else()
+    add_library(${ADD_LIB_TARGET_NAME} STATIC ${SRC_LIST})
+  endif()
 
-    target_link_libraries(${ADD_LIB_TARGET_NAME} ${ADD_LIB_LINK_TO})
+  target_link_libraries(${ADD_LIB_TARGET_NAME} ${ADD_LIB_LINK_TO})
 
-    install(TARGETS ${ADD_LIB_TARGET_NAME} LIBRARY
-        DESTINATION lib
-        COMPONENT ${ADD_LIB_TARGET_NAME})
+  install(TARGETS ${ADD_LIB_TARGET_NAME} LIBRARY
+    DESTINATION lib
+    COMPONENT ${ADD_LIB_TARGET_NAME})
 
-    if(BUILD_SHARED_LIBS)
-        configure_file(${PROJECT_SOURCE_DIR}/cmake/libtemplate.pc.in
-            lib${ADD_LIB_TARGET_NAME}.pc @ONLY)
-        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${ADD_LIB_TARGET_NAME}.pc
-            DESTINATION lib/pkgconfig)
-    endif()
+  if(BUILD_SHARED_LIBS)
+    configure_file(${PROJECT_SOURCE_DIR}/cmake/libtemplate.pc.in
+      lib${ADD_LIB_TARGET_NAME}.pc @ONLY)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${ADD_LIB_TARGET_NAME}.pc
+      DESTINATION lib/pkgconfig)
+  endif()
 endfunction()
 
 # add executable target
 function(add_bin)
-    set(ONE_VALUE_ARGS TARGET_NAME)
-    set(MULTI_VALUE_ARGS LINK_TO)
-    cmake_parse_arguments(ADD_BIN
-        "" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
+  set(ONE_VALUE_ARGS TARGET_NAME)
+  set(MULTI_VALUE_ARGS LINK_TO)
+  cmake_parse_arguments(ADD_BIN
+    "" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
-    if(NOT EXISTS ${PROJECT_SOURCE_DIR}/bin/${ADD_BIN_TARGET_NAME})
-        message(WARNING "Target bin ${ADD_BIN_TARGET_NAME} does not exists")
-        return()
-    endif()
-    aux_source_directory(${PROJECT_SOURCE_DIR}/bin/${ADD_BIN_TARGET_NAME} SRC_LIST)
-    add_executable(${ADD_BIN_TARGET_NAME} ${SRC_LIST})
-    target_link_libraries(${ADD_BIN_TARGET_NAME} ${ADD_BIN_LINK_TO})
+  if(NOT EXISTS ${PROJECT_SOURCE_DIR}/bin/${ADD_BIN_TARGET_NAME})
+    message(WARNING "Target bin ${ADD_BIN_TARGET_NAME} does not exists")
+    return()
+  endif()
+  aux_source_directory(${PROJECT_SOURCE_DIR}/bin/${ADD_BIN_TARGET_NAME} SRC_LIST)
+  add_executable(${ADD_BIN_TARGET_NAME} ${SRC_LIST})
+  target_link_libraries(${ADD_BIN_TARGET_NAME} ${ADD_BIN_LINK_TO})
 
-    install(TARGETS ${ADD_BIN_TARGET_NAME} RUNTIME
-        DESTINATION bin
-        COMPONENT ${ADD_BIN_TARGET_NAME})
+  install(TARGETS ${ADD_BIN_TARGET_NAME} RUNTIME
+    DESTINATION bin
+    COMPONENT ${ADD_BIN_TARGET_NAME})
 endfunction()
