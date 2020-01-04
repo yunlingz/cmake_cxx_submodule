@@ -15,8 +15,8 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(example
-  VERSION 0.0.1
-  LANGUAGES CXX)
+    VERSION 0.0.1
+    LANGUAGES CXX)
 
 option(REQUIRES_RTTI "Build with RTTI enabled" OFF)
 option(REQUIRES_MARCH_NATIVE "Build with -march=native" ON)
