@@ -29,9 +29,24 @@ message(STATUS "${CMAKE_CXX_FLAGS_RELEASE}")
 option(BUILD_SHARED_LIBS "Create shared libraries" ON)
 include(${PROJECT_SOURCE_DIR}/cmake/SubModule.cmake)
 
-add_bin(TARGET_NAME sub_test LINK_TO example_sub)
+add_bin(TARGET_NAME sub_test
+  SRC bin/sub_test/test.cc
+  LINK_TO example_sub)
 # add_lib(TARGET_NAME some_bin_not_exist) # should trigger warning
 
-add_lib(TARGET_NAME example_add LINK_TO)
-add_lib(TARGET_NAME example_sub LINK_TO example_add)
+add_lib(
+  TARGET_NAME example_add INNER
+  SRC
+    lib/example_add/add.cc
+    lib/example_add/add_one.cc
+  LINK_TO
+  COMPILE_FLAGS
+    -fexceptions
+    -DHEHE)
+
+add_lib(
+  TARGET_NAME example_sub
+  SRC
+    lib/example_sub/sub.cc
+  LINK_TO example_add)
 # add_lib(TARGET_NAME some_lib_not_exist) # should trigger warning

@@ -33,33 +33,45 @@ endif()
 
 # add library target
 function(add_lib)
+  set(OPTIONS INNER)
   set(ONE_VALUE_ARGS TARGET_NAME)
-  set(MULTI_VALUE_ARGS LINK_TO)
+  set(MULTI_VALUE_ARGS SRC LINK_TO COMPILE_FLAGS LINK_FLAGS)
   cmake_parse_arguments(ADD_LIB
-    "" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
+    "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
-  if(NOT EXISTS ${PROJECT_SOURCE_DIR}/lib/${ADD_LIB_TARGET_NAME})
-    message(WARNING "Target lib ${ADD_LIB_TARGET_NAME} does not exists")
-    return()
-  endif()
-  aux_source_directory(${PROJECT_SOURCE_DIR}/lib/${ADD_LIB_TARGET_NAME} SRC_LIST)
-
-  if(BUILD_SHARED_LIBS)
-    add_library(${ADD_LIB_TARGET_NAME} SHARED ${SRC_LIST})
+  message(STATUS "${ADD_LIB_TARGET_NAME}: [${ADD_LIB_INNER}]")
+  if(BUILD_SHARED_LIBS AND (NOT ADD_LIB_INNER))
+    add_library(${ADD_LIB_TARGET_NAME} SHARED ${ADD_LIB_SRC})
     set_target_properties(${ADD_LIB_TARGET_NAME} PROPERTIES
       VERSION ${PROJECT_VERSION}
       SOVERSION ${PROJECT_VERSION_MAJOR})
   else()
-    add_library(${ADD_LIB_TARGET_NAME} STATIC ${SRC_LIST})
+    add_library(${ADD_LIB_TARGET_NAME} STATIC ${ADD_LIB_SRC})
+  endif()
+
+  if(ADD_LIB_COMPILE_FLAGS)
+    string(REPLACE ";" " " ADD_LIB_COMPILE_FLAGS "${ADD_LIB_COMPILE_FLAGS}")
+    message(STATUS "1: ${ADD_LIB_COMPILE_FLAGS}")
+    set_target_properties(${ADD_LIB_TARGET_NAME} PROPERTIES
+      COMPILE_FLAGS ${ADD_LIB_COMPILE_FLAGS})
+  endif()
+
+  if(ADD_LIB_LINK_FLAGS)
+    string(REPLACE ";" " " ADD_LIB_LINK_FLAGS "${ADD_LIB_LINK_FLAGS}")
+    message(STATUS "3: [${ADD_LIB_LINK_FLAGS}]")
+    set_target_properties(${ADD_LIB_TARGET_NAME} PROPERTIES
+      LINK_FLAGS ${ADD_LIB_LINK_FLAGS})
   endif()
 
   target_link_libraries(${ADD_LIB_TARGET_NAME} ${ADD_LIB_LINK_TO})
 
-  install(TARGETS ${ADD_LIB_TARGET_NAME} LIBRARY
-    DESTINATION lib
-    COMPONENT ${ADD_LIB_TARGET_NAME})
+  if(NOT ADD_LIB_INNER)
+    install(TARGETS ${ADD_LIB_TARGET_NAME} LIBRARY
+      DESTINATION lib
+      COMPONENT ${ADD_LIB_TARGET_NAME})
+  endif()
 
-  if(BUILD_SHARED_LIBS)
+  if(BUILD_SHARED_LIBS AND (NOT ADD_LIB_INNER))
     configure_file(${PROJECT_SOURCE_DIR}/cmake/libtemplate.pc.in
       lib${ADD_LIB_TARGET_NAME}.pc @ONLY)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${ADD_LIB_TARGET_NAME}.pc
@@ -69,20 +81,33 @@ endfunction()
 
 # add executable target
 function(add_bin)
+  set(OPTIONS INNER)
   set(ONE_VALUE_ARGS TARGET_NAME)
-  set(MULTI_VALUE_ARGS LINK_TO)
+  set(MULTI_VALUE_ARGS SRC LINK_TO COMPILE_FLAGS LINK_FLAGS)
   cmake_parse_arguments(ADD_BIN
-    "" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
+    "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
-  if(NOT EXISTS ${PROJECT_SOURCE_DIR}/bin/${ADD_BIN_TARGET_NAME})
-    message(WARNING "Target bin ${ADD_BIN_TARGET_NAME} does not exists")
-    return()
+  add_executable(${ADD_BIN_TARGET_NAME} ${ADD_BIN_SRC})
+
+  if(ADD_BIN_COMPILE_FLAGS)
+    string(REPLACE ";" " " ADD_BIN_COMPILE_FLAGS "${ADD_BIN_COMPILE_FLAGS}")
+    message(STATUS "1: ${ADD_BIN_COMPILE_FLAGS}")
+    set_target_properties(${ADD_BIN_TARGET_NAME} PROPERTIES
+      COMPILE_FLAGS ${ADD_BIN_COMPILE_FLAGS})
   endif()
-  aux_source_directory(${PROJECT_SOURCE_DIR}/bin/${ADD_BIN_TARGET_NAME} SRC_LIST)
-  add_executable(${ADD_BIN_TARGET_NAME} ${SRC_LIST})
+
+  if(ADD_BIN_LINK_FLAGS)
+    string(REPLACE ";" " " ADD_BIN_LINK_FLAGS "${ADD_BIN_LINK_FLAGS}")
+    message(STATUS "3: [${ADD_BIN_LINK_FLAGS}]")
+    set_target_properties(${ADD_BIN_TARGET_NAME} PROPERTIES
+      LINK_FLAGS ${ADD_BIN_LINK_FLAGS})
+  endif()
+
   target_link_libraries(${ADD_BIN_TARGET_NAME} ${ADD_BIN_LINK_TO})
 
-  install(TARGETS ${ADD_BIN_TARGET_NAME} RUNTIME
-    DESTINATION bin
-    COMPONENT ${ADD_BIN_TARGET_NAME})
+  if(NOT ADD_BIN_INNER)
+    install(TARGETS ${ADD_BIN_TARGET_NAME} RUNTIME
+      DESTINATION bin
+      COMPONENT ${ADD_BIN_TARGET_NAME})
+  endif()
 endfunction()
