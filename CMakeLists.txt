@@ -18,35 +18,40 @@ project(example
   VERSION 0.0.1
   LANGUAGES CXX)
 
-option(REQUIRES_RTTI "Build with RTTI enabled" OFF)
-option(REQUIRES_MARCH_NATIVE "Build with -march=native" ON)
 include(${PROJECT_SOURCE_DIR}/cmake/CXX17Enforce.cmake)
 
 message(STATUS "${CMAKE_CXX_FLAGS}")
 message(STATUS "${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS "${CMAKE_CXX_FLAGS_RELEASE}")
 
-option(BUILD_SHARED_LIBS "Create shared libraries" ON)
 include(${PROJECT_SOURCE_DIR}/cmake/SubModule.cmake)
 
-add_bin(TARGET_NAME sub_test
-  SRC bin/sub_test/test.cc
+add_bin(TARGET_NAME "sub_test"
+  INCLUDE_DIRS
+    "${PROJECT_SOURCE_DIR}/include"
+    "/usr/local/Cellar/eigen/3.3.7/include/eigen3"
+  SRC
+    "${PROJECT_SOURCE_DIR}/bin/sub_test/test.cc"
   LINK_TO example_sub)
 # add_lib(TARGET_NAME some_bin_not_exist) # should trigger warning
 
 add_lib(
-  TARGET_NAME example_add INNER
+  TARGET_NAME "example_add" INNER
+  INCLUDE_DIRS
+    "${PROJECT_SOURCE_DIR}/include"
   SRC
-    lib/example_add/add.cc
-    lib/example_add/add_one.cc
+    "${PROJECT_SOURCE_DIR}/lib/example_add/add.cc"
+    "${PROJECT_SOURCE_DIR}/lib/example_add/add_one.cc"
   LINK_TO
   COMPILE_FLAGS
-    -fexceptions
-    -DHEHE)
+    "-fexceptions"
+    "-DHEHE")
 
 add_lib(
-  TARGET_NAME example_sub
+  TARGET_NAME "example_sub"
+  INCLUDE_DIRS
+    "${PROJECT_SOURCE_DIR}/include"
   SRC
-    lib/example_sub/sub.cc
+    "${PROJECT_SOURCE_DIR}/lib/example_sub/sub.cc"
   LINK_TO example_add)
 # add_lib(TARGET_NAME some_lib_not_exist) # should trigger warning

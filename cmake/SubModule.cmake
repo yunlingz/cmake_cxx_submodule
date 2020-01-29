@@ -12,15 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+if(NOT BUILD_SHARED_LIBS)
+  option(BUILD_SHARED_LIBS "Create shared libraries" ON)
+endif()
+
 if(NOT (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
   message(WARNING "We do not encourage you to build ${PROJECT_NAME} as a subproject")
 endif()
 
-if(EXISTS ${PROJECT_SOURCE_DIR}/include)
-  include_directories(${PROJECT_SOURCE_DIR}/include)
-  install(DIRECTORY ${PROJECT_SOURCE_DIR}/include
-    DESTINATION ${CMAKE_INSTALL_PREFIX})
-endif()
+# if(EXISTS ${PROJECT_SOURCE_DIR}/include)
+#   include_directories(${PROJECT_SOURCE_DIR}/include)
+#   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include
+#     DESTINATION ${CMAKE_INSTALL_PREFIX})
+# endif()
 
 # rpath handling
 set(CMAKE_MACOSX_RPATH ON)
@@ -35,7 +39,7 @@ endif()
 function(add_lib)
   set(OPTIONS INNER)
   set(ONE_VALUE_ARGS TARGET_NAME)
-  set(MULTI_VALUE_ARGS SRC LINK_TO COMPILE_FLAGS LINK_FLAGS)
+  set(MULTI_VALUE_ARGS SRC INCLUDE_DIRS LINK_TO COMPILE_FLAGS LINK_FLAGS)
   cmake_parse_arguments(ADD_LIB
     "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
@@ -47,6 +51,15 @@ function(add_lib)
       SOVERSION ${PROJECT_VERSION_MAJOR})
   else()
     add_library(${ADD_LIB_TARGET_NAME} STATIC ${ADD_LIB_SRC})
+  endif()
+
+  if(ADD_LIB_INCLUDE_DIRS)
+    message(STATUS "0: ${ADD_LIB_INCLUDE_DIRS}")
+    target_include_directories(${ADD_LIB_TARGET_NAME} PUBLIC ${ADD_LIB_INCLUDE_DIRS})
+  endif()
+
+  if(ADD_LIB_LINK_TO)
+    target_link_libraries(${ADD_LIB_TARGET_NAME} ${ADD_LIB_LINK_TO})
   endif()
 
   if(ADD_LIB_COMPILE_FLAGS)
@@ -62,8 +75,6 @@ function(add_lib)
     set_target_properties(${ADD_LIB_TARGET_NAME} PROPERTIES
       LINK_FLAGS ${ADD_LIB_LINK_FLAGS})
   endif()
-
-  target_link_libraries(${ADD_LIB_TARGET_NAME} ${ADD_LIB_LINK_TO})
 
   if(NOT ADD_LIB_INNER)
     install(TARGETS ${ADD_LIB_TARGET_NAME} LIBRARY
@@ -83,11 +94,20 @@ endfunction()
 function(add_bin)
   set(OPTIONS INNER)
   set(ONE_VALUE_ARGS TARGET_NAME)
-  set(MULTI_VALUE_ARGS SRC LINK_TO COMPILE_FLAGS LINK_FLAGS)
+  set(MULTI_VALUE_ARGS SRC INCLUDE_DIRS LINK_TO COMPILE_FLAGS LINK_FLAGS)
   cmake_parse_arguments(ADD_BIN
     "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
   add_executable(${ADD_BIN_TARGET_NAME} ${ADD_BIN_SRC})
+
+  if(ADD_BIN_INCLUDE_DIRS)
+    message(STATUS "0: ${ADD_BIN_INCLUDE_DIRS}")
+    target_include_directories(${ADD_BIN_TARGET_NAME} PUBLIC ${ADD_BIN_INCLUDE_DIRS})
+  endif()
+
+  if(ADD_BIN_LINK_TO)
+    target_link_libraries(${ADD_BIN_TARGET_NAME} ${ADD_BIN_LINK_TO})
+  endif()
 
   if(ADD_BIN_COMPILE_FLAGS)
     string(REPLACE ";" " " ADD_BIN_COMPILE_FLAGS "${ADD_BIN_COMPILE_FLAGS}")
@@ -102,8 +122,6 @@ function(add_bin)
     set_target_properties(${ADD_BIN_TARGET_NAME} PROPERTIES
       LINK_FLAGS ${ADD_BIN_LINK_FLAGS})
   endif()
-
-  target_link_libraries(${ADD_BIN_TARGET_NAME} ${ADD_BIN_LINK_TO})
 
   if(NOT ADD_BIN_INNER)
     install(TARGETS ${ADD_BIN_TARGET_NAME} RUNTIME

@@ -12,6 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+if(NOT REQUIRES_RTTI)
+  option(REQUIRES_RTTI "Build with RTTI enabled" OFF)
+endif()
+
+if(NOT REQUIRES_MARCH_NATIVE)
+  option(REQUIRES_MARCH_NATIVE "Build with -march=native" ON)
+endif()
+
 string(TOLOWER "${CMAKE_BUILD_TYPE}" LOWERCASE_CMAKE_BUILD_TYPE)
 if(LOWERCASE_CMAKE_BUILD_TYPE STREQUAL "debug")
   set(CMAKE_BUILD_TYPE "Debug")
