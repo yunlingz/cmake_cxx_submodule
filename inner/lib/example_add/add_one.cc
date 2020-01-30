@@ -1,4 +1,4 @@
-#include "example/add.h"
+#include "example_inner/add.h"
 
 namespace example {
 

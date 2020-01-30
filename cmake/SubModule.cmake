@@ -58,8 +58,14 @@ function(add_lib)
   endif()
 
   target_include_directories(${ADD_LIB_TARGET_NAME} PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/inner/include)
+    ${PROJECT_SOURCE_DIR}/include)
+  if(NOT ADD_LIB_INNER)
+    target_include_directories(${ADD_LIB_TARGET_NAME} PRIVATE
+      ${PROJECT_SOURCE_DIR}/inner/include)
+  else()
+    target_include_directories(${ADD_LIB_TARGET_NAME} PUBLIC
+      ${PROJECT_SOURCE_DIR}/inner/include)
+  endif()
 
   if(ADD_LIB_LINK_TO)
     target_link_libraries(${ADD_LIB_TARGET_NAME} ${ADD_LIB_LINK_TO})
@@ -108,8 +114,14 @@ function(add_bin)
   add_executable(${ADD_BIN_TARGET_NAME} ${SRC_LIST})
 
   target_include_directories(${ADD_BIN_TARGET_NAME} PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/inner/include)
+    ${PROJECT_SOURCE_DIR}/include)
+  if(NOT ADD_BIN_INNER)
+    target_include_directories(${ADD_BIN_TARGET_NAME} PRIVATE
+      ${PROJECT_SOURCE_DIR}/inner/include)
+  else()
+    target_include_directories(${ADD_BIN_TARGET_NAME} PUBLIC
+      ${PROJECT_SOURCE_DIR}/inner/include)
+  endif()
 
   if(ADD_BIN_LINK_TO)
     target_link_libraries(${ADD_BIN_TARGET_NAME} ${ADD_BIN_LINK_TO})
