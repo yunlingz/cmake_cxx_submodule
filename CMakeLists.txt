@@ -27,31 +27,15 @@ message(STATUS "${CMAKE_CXX_FLAGS_RELEASE}")
 include(${PROJECT_SOURCE_DIR}/cmake/SubModule.cmake)
 
 add_bin(TARGET_NAME sub_test
-  SRC
-    "${PROJECT_SOURCE_DIR}/bin/sub_test/test.cc"
-  INCLUDE_DIRS
-    "${PROJECT_SOURCE_DIR}/include"
-    "/usr/local/Cellar/eigen/3.3.7/include/eigen3"
   LINK_TO
     example_sub)
 # add_lib(TARGET_NAME some_bin_not_exist) # should trigger warning
 
 add_lib(TARGET_NAME example_add INNER
-  SRC
-    "${PROJECT_SOURCE_DIR}/lib/example_add/add.cc"
-    "${PROJECT_SOURCE_DIR}/lib/example_add/add_one.cc"
-  INCLUDE_DIRS
-    "${PROJECT_SOURCE_DIR}/include"
   LINK_TO
   COMPILE_FLAGS
     "-fexceptions"
     "-DHEHE")
 
-add_lib(TARGET_NAME example_sub
-  SRC
-    "${PROJECT_SOURCE_DIR}/lib/example_sub/sub.cc"
-  INCLUDE_DIRS
-    "${PROJECT_SOURCE_DIR}/include"
-  LINK_TO
-    example_add)
+add_lib(TARGET_NAME example_sub LINK_TO example_add)
 # add_lib(TARGET_NAME some_lib_not_exist) # should trigger warning

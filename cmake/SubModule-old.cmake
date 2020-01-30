@@ -20,10 +20,11 @@ if(NOT (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
   message(WARNING "We do not encourage you to build ${PROJECT_NAME} as a subproject")
 endif()
 
-if(EXISTS ${PROJECT_SOURCE_DIR}/include)
-  install(DIRECTORY ${PROJECT_SOURCE_DIR}/include
-    DESTINATION ${CMAKE_INSTALL_PREFIX})
-endif()
+# if(EXISTS ${PROJECT_SOURCE_DIR}/include)
+#   include_directories(${PROJECT_SOURCE_DIR}/include)
+#   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include
+#     DESTINATION ${CMAKE_INSTALL_PREFIX})
+# endif()
 
 # rpath handling
 set(CMAKE_MACOSX_RPATH ON)
@@ -38,28 +39,24 @@ endif()
 function(add_lib)
   set(OPTIONS INNER)
   set(ONE_VALUE_ARGS TARGET_NAME)
-  set(MULTI_VALUE_ARGS LINK_TO COMPILE_FLAGS LINK_FLAGS)
+  set(MULTI_VALUE_ARGS SRC INCLUDE_DIRS LINK_TO COMPILE_FLAGS LINK_FLAGS)
   cmake_parse_arguments(ADD_LIB
     "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
-  if(NOT ADD_LIB_INNER)
-    aux_source_directory(${PROJECT_SOURCE_DIR}/lib/${ADD_LIB_TARGET_NAME} SRC_LIST)
-  else()
-    aux_source_directory(${PROJECT_SOURCE_DIR}/inner/lib/${ADD_LIB_TARGET_NAME} SRC_LIST)
-  endif()
-
+  message(STATUS "${ADD_LIB_TARGET_NAME}: [${ADD_LIB_INNER}]")
   if(BUILD_SHARED_LIBS AND (NOT ADD_LIB_INNER))
-    add_library(${ADD_LIB_TARGET_NAME} SHARED ${SRC_LIST})
+    add_library(${ADD_LIB_TARGET_NAME} SHARED ${ADD_LIB_SRC})
     set_target_properties(${ADD_LIB_TARGET_NAME} PROPERTIES
       VERSION ${PROJECT_VERSION}
       SOVERSION ${PROJECT_VERSION_MAJOR})
   else()
-    add_library(${ADD_LIB_TARGET_NAME} STATIC ${SRC_LIST})
+    add_library(${ADD_LIB_TARGET_NAME} STATIC ${ADD_LIB_SRC})
   endif()
 
-  target_include_directories(${ADD_LIB_TARGET_NAME} PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/inner/include)
+  if(ADD_LIB_INCLUDE_DIRS)
+    message(STATUS "0: ${ADD_LIB_INCLUDE_DIRS}")
+    target_include_directories(${ADD_LIB_TARGET_NAME} PUBLIC ${ADD_LIB_INCLUDE_DIRS})
+  endif()
 
   if(ADD_LIB_LINK_TO)
     target_link_libraries(${ADD_LIB_TARGET_NAME} ${ADD_LIB_LINK_TO})
@@ -67,12 +64,14 @@ function(add_lib)
 
   if(ADD_LIB_COMPILE_FLAGS)
     string(REPLACE ";" " " ADD_LIB_COMPILE_FLAGS "${ADD_LIB_COMPILE_FLAGS}")
+    message(STATUS "1: ${ADD_LIB_COMPILE_FLAGS}")
     set_target_properties(${ADD_LIB_TARGET_NAME} PROPERTIES
       COMPILE_FLAGS ${ADD_LIB_COMPILE_FLAGS})
   endif()
 
   if(ADD_LIB_LINK_FLAGS)
     string(REPLACE ";" " " ADD_LIB_LINK_FLAGS "${ADD_LIB_LINK_FLAGS}")
+    message(STATUS "3: [${ADD_LIB_LINK_FLAGS}]")
     set_target_properties(${ADD_LIB_TARGET_NAME} PROPERTIES
       LINK_FLAGS ${ADD_LIB_LINK_FLAGS})
   endif()
@@ -95,21 +94,16 @@ endfunction()
 function(add_bin)
   set(OPTIONS INNER)
   set(ONE_VALUE_ARGS TARGET_NAME)
-  set(MULTI_VALUE_ARGS LINK_TO COMPILE_FLAGS LINK_FLAGS)
+  set(MULTI_VALUE_ARGS SRC INCLUDE_DIRS LINK_TO COMPILE_FLAGS LINK_FLAGS)
   cmake_parse_arguments(ADD_BIN
     "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
-  if(NOT ADD_BIN_INNER)
-    aux_source_directory(${PROJECT_SOURCE_DIR}/bin/${ADD_BIN_TARGET_NAME} SRC_LIST)
-  else()
-    aux_source_directory(${PROJECT_SOURCE_DIR}/inner/bin/${ADD_BIN_TARGET_NAME} SRC_LIST)
+  add_executable(${ADD_BIN_TARGET_NAME} ${ADD_BIN_SRC})
+
+  if(ADD_BIN_INCLUDE_DIRS)
+    message(STATUS "0: ${ADD_BIN_INCLUDE_DIRS}")
+    target_include_directories(${ADD_BIN_TARGET_NAME} PUBLIC ${ADD_BIN_INCLUDE_DIRS})
   endif()
-
-  add_executable(${ADD_BIN_TARGET_NAME} ${SRC_LIST})
-
-  target_include_directories(${ADD_BIN_TARGET_NAME} PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/inner/include)
 
   if(ADD_BIN_LINK_TO)
     target_link_libraries(${ADD_BIN_TARGET_NAME} ${ADD_BIN_LINK_TO})
@@ -117,12 +111,14 @@ function(add_bin)
 
   if(ADD_BIN_COMPILE_FLAGS)
     string(REPLACE ";" " " ADD_BIN_COMPILE_FLAGS "${ADD_BIN_COMPILE_FLAGS}")
+    message(STATUS "1: ${ADD_BIN_COMPILE_FLAGS}")
     set_target_properties(${ADD_BIN_TARGET_NAME} PROPERTIES
       COMPILE_FLAGS ${ADD_BIN_COMPILE_FLAGS})
   endif()
 
   if(ADD_BIN_LINK_FLAGS)
     string(REPLACE ";" " " ADD_BIN_LINK_FLAGS "${ADD_BIN_LINK_FLAGS}")
+    message(STATUS "3: [${ADD_BIN_LINK_FLAGS}]")
     set_target_properties(${ADD_BIN_TARGET_NAME} PROPERTIES
       LINK_FLAGS ${ADD_BIN_LINK_FLAGS})
   endif()
