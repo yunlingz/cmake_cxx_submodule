@@ -60,12 +60,11 @@ function(add_lib)
     add_library(${ADD_LIB_TARGET_NAME} STATIC ${SRC_LIST})
   endif()
 
-  target_include_directories(${ADD_LIB_TARGET_NAME} PUBLIC
-    ${PROJECT_SOURCE_DIR}/include)
-  if(NOT ADD_LIB_INNER)
-    target_include_directories(${ADD_LIB_TARGET_NAME} PRIVATE
-      ${PROJECT_SOURCE_DIR}/inner/include)
-  else()
+  if(EXISTS ${PROJECT_SOURCE_DIR}/include)
+    target_include_directories(${ADD_LIB_TARGET_NAME} PUBLIC
+      ${PROJECT_SOURCE_DIR}/include)
+  endif()
+  if(EXISTS ${PROJECT_SOURCE_DIR}/inner/include)
     target_include_directories(${ADD_LIB_TARGET_NAME} PUBLIC
       ${PROJECT_SOURCE_DIR}/inner/include)
   endif()
@@ -119,12 +118,11 @@ function(add_bin)
 
   add_executable(${ADD_BIN_TARGET_NAME} ${SRC_LIST})
 
-  target_include_directories(${ADD_BIN_TARGET_NAME} PUBLIC
-    ${PROJECT_SOURCE_DIR}/include)
-  if(NOT ADD_BIN_INNER)
-    target_include_directories(${ADD_BIN_TARGET_NAME} PRIVATE
-      ${PROJECT_SOURCE_DIR}/inner/include)
-  else()
+  if(EXISTS ${PROJECT_SOURCE_DIR}/include)
+    target_include_directories(${ADD_BIN_TARGET_NAME} PUBLIC
+      ${PROJECT_SOURCE_DIR}/include)
+  endif()
+  if(EXISTS ${PROJECT_SOURCE_DIR}/inner/include)
     target_include_directories(${ADD_BIN_TARGET_NAME} PUBLIC
       ${PROJECT_SOURCE_DIR}/inner/include)
   endif()
