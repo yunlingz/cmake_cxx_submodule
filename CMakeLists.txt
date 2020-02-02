@@ -34,9 +34,7 @@ add_bin(TARGET_NAME sub_test
 add_lib(TARGET_NAME example_add INNER
   SRC add_one.cc add.cc
   LINK_TO
-  COMPILE_FLAGS
-    "-fexceptions"
-    "-DHEHE")
+  COMPILE_FLAGS -fexceptions -frtti)
 
 add_lib(TARGET_NAME example_sub
   SRC sub.cc

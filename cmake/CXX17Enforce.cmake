@@ -69,7 +69,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
 
   # disable exception and rtti
   # -----------------------------------------------------------------
-  # -fno-exceptions (-fno-rtti)
+  # (-fno-exceptions) (-fno-rtti)
   # -----------------------------------------------------------------
   if(NOT REQUIRES_EXCEPTIONS)
     check_cxx_compiler_flag("-fno-exceptions" CXX_COMPILER_HAS_FNO_EXCEPTIONS)
