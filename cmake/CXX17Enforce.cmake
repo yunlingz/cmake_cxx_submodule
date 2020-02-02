@@ -12,14 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if(NOT REQUIRES_RTTI)
-  option(REQUIRES_RTTI "Build with RTTI enabled" OFF)
-endif()
-
-if(NOT REQUIRES_MARCH_NATIVE)
-  option(REQUIRES_MARCH_NATIVE "Build with -march=native" ON)
-endif()
-
 string(TOLOWER "${CMAKE_BUILD_TYPE}" LOWERCASE_CMAKE_BUILD_TYPE)
 if(LOWERCASE_CMAKE_BUILD_TYPE STREQUAL "debug")
   set(CMAKE_BUILD_TYPE "Debug")
@@ -30,6 +22,19 @@ else()
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+  # predefined options
+  if(NOT REQUIRES_EXCEPTIONS)
+    option(REQUIRES_EXCEPTIONS "Build with C++ Exceptions support" OFF)
+  endif()
+
+  if(NOT REQUIRES_RTTI)
+    option(REQUIRES_RTTI "Build with RTTI enabled" OFF)
+  endif()
+
+  if(NOT REQUIRES_MARCH_NATIVE)
+    option(REQUIRES_MARCH_NATIVE "Build with -march=native" ON)
+  endif()
+
   include(CheckCXXCompilerFlag)
   # basic c++17 flags
   # -----------------------------------------------------------------
@@ -66,9 +71,11 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
   # -----------------------------------------------------------------
   # -fno-exceptions (-fno-rtti)
   # -----------------------------------------------------------------
-  check_cxx_compiler_flag("-fno-exceptions" CXX_COMPILER_HAS_FNO_EXCEPTIONS)
-  if(CXX_COMPILER_HAS_FNO_EXCEPTIONS)
-    list(APPEND CUSTOM_CMAKE_CXX_FLAGS "-fno-exceptions")
+  if(NOT REQUIRES_EXCEPTIONS)
+    check_cxx_compiler_flag("-fno-exceptions" CXX_COMPILER_HAS_FNO_EXCEPTIONS)
+    if(CXX_COMPILER_HAS_FNO_EXCEPTIONS)
+      list(APPEND CUSTOM_CMAKE_CXX_FLAGS "-fno-exceptions")
+    endif()
   endif()
 
   if(NOT REQUIRES_RTTI)

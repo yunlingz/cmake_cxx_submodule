@@ -27,15 +27,18 @@ message(STATUS "${CMAKE_CXX_FLAGS_RELEASE}")
 include(${PROJECT_SOURCE_DIR}/cmake/SubModule.cmake)
 
 add_bin(TARGET_NAME sub_test
-  LINK_TO
-    example_sub)
+  SRC test.cc
+  LINK_TO example_sub)
 # add_lib(TARGET_NAME some_bin_not_exist) # should trigger warning
 
 add_lib(TARGET_NAME example_add INNER
+  SRC add_one.cc add.cc
   LINK_TO
   COMPILE_FLAGS
     "-fexceptions"
     "-DHEHE")
 
-add_lib(TARGET_NAME example_sub LINK_TO example_add)
+add_lib(TARGET_NAME example_sub
+  SRC sub.cc
+  LINK_TO example_add)
 # add_lib(TARGET_NAME some_lib_not_exist) # should trigger warning
