@@ -22,6 +22,19 @@ else()
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+  # predefined options
+  if(NOT REQUIRES_EXCEPTIONS)
+    option(REQUIRES_EXCEPTIONS "Build with C++ Exceptions support" OFF)
+  endif()
+
+  if(NOT REQUIRES_RTTI)
+    option(REQUIRES_RTTI "Build with RTTI enabled" OFF)
+  endif()
+
+  if(NOT REQUIRES_MARCH_NATIVE)
+    option(REQUIRES_MARCH_NATIVE "Build with -march=native" ON)
+  endif()
+
   include(CheckCXXCompilerFlag)
   # basic c++17 flags
   # -----------------------------------------------------------------
@@ -56,16 +69,20 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
 
   # disable exception and rtti
   # -----------------------------------------------------------------
-  # -fno-exceptions -fno-rtti
+  # (-fno-exceptions) (-fno-rtti)
   # -----------------------------------------------------------------
-  check_cxx_compiler_flag("-fno-exceptions" CXX_COMPILER_HAS_FNO_EXCEPTIONS)
-  if(CXX_COMPILER_HAS_FNO_EXCEPTIONS)
-    list(APPEND CUSTOM_CMAKE_CXX_FLAGS "-fno-exceptions")
+  if(NOT REQUIRES_EXCEPTIONS)
+    check_cxx_compiler_flag("-fno-exceptions" CXX_COMPILER_HAS_FNO_EXCEPTIONS)
+    if(CXX_COMPILER_HAS_FNO_EXCEPTIONS)
+      list(APPEND CUSTOM_CMAKE_CXX_FLAGS "-fno-exceptions")
+    endif()
   endif()
 
-  check_cxx_compiler_flag("-fno-rtti" CXX_COMPILER_HAS_FNO_RTTI)
-  if(CXX_COMPILER_HAS_FNO_RTTI)
-    list(APPEND CUSTOM_CMAKE_CXX_FLAGS "-fno-rtti")
+  if(NOT REQUIRES_RTTI)
+    check_cxx_compiler_flag("-fno-rtti" CXX_COMPILER_HAS_FNO_RTTI)
+    if(CXX_COMPILER_HAS_FNO_RTTI)
+      list(APPEND CUSTOM_CMAKE_CXX_FLAGS "-fno-rtti")
+    endif()
   endif()
 
   string(REPLACE ";" " " CUSTOM_CMAKE_CXX_FLAGS "${CUSTOM_CMAKE_CXX_FLAGS}")
@@ -88,16 +105,28 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
   # basic release flags
   # -----------------------------------------------------------------
   # -DNDEBUG
-  # -O2 -fomit-frame-pointer
+  # (-march=native) -O2 -ftree-vectorize -fomit-frame-pointer
   # -----------------------------------------------------------------
   check_cxx_compiler_flag("-DNDEBUG" CXX_COMPILER_HAS_DNDEBUG)
   if(CXX_COMPILER_HAS_DNDEBUG)
     list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG")
   endif()
 
+  if(REQUIRES_MARCH_NATIVE)
+    check_cxx_compiler_flag("-march=native" CXX_COMPILER_HAS_MARCH_NATIVE)
+    if(CXX_COMPILER_HAS_MARCH_NATIVE)
+      list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-march=native")
+    endif()
+  endif()
+
   check_cxx_compiler_flag("-O2" CXX_COMPILER_HAS_O2)
   if(CXX_COMPILER_HAS_O2)
     list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-O2")
+  endif()
+
+  check_cxx_compiler_flag("-ftree-vectorize" CXX_COMPILER_HAS_FTREE_VECTORIZE)
+  if(CXX_COMPILER_HAS_FTREE_VECTORIZE)
+    list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-ftree-vectorize")
   endif()
 
   check_cxx_compiler_flag("-fomit-frame-pointer" CXX_COMPILER_HAS_FOMIT_FRAME_POINTER)
