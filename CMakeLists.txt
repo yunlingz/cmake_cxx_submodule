@@ -26,17 +26,27 @@ message(STATUS "${CMAKE_CXX_FLAGS_RELEASE}")
 
 include(${PROJECT_SOURCE_DIR}/cmake/SubModule.cmake)
 
+add_subdirectory(${PROJECT_SOURCE_DIR}/gtest EXCLUDE_FROM_ALL)
+
+add_inc(TARGET_NAME include)
+add_inc(TARGET_NAME inner/include INNER)
+# add_inc(TARGET_NAME inner/include_2)
+
 add_bin(TARGET_NAME sub_test
-  SRC test.cc
+  SRC bin/sub_test/test.cc
   LINK_TO example_sub)
 # add_lib(TARGET_NAME some_bin_not_exist) # should trigger warning
 
 add_lib(TARGET_NAME example_add INNER
-  SRC add_one.cc add.cc
+  SRC inner/lib/example_add/add_one.cc inner/lib/example_add/add.cc
   LINK_TO
   COMPILE_FLAGS -fexceptions -frtti)
 
 add_lib(TARGET_NAME example_sub
-  SRC sub.cc
+  SRC lib/example_sub/sub.cc
   LINK_TO example_add)
 # add_lib(TARGET_NAME some_lib_not_exist) # should trigger warning
+
+add_bin(TARGET_NAME run_test INNER
+  SRC inner/bin/run_test/test_1.cc inner/bin/run_test/test_2.cc
+  LINK_TO gtest_main)

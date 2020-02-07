@@ -20,10 +20,10 @@ if(NOT (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
   message(WARNING "We do not encourage you to build ${PROJECT_NAME} as a subproject")
 endif()
 
-if(EXISTS ${PROJECT_SOURCE_DIR}/include)
-  install(DIRECTORY ${PROJECT_SOURCE_DIR}/include
-    DESTINATION ${CMAKE_INSTALL_PREFIX})
-endif()
+# if(EXISTS ${PROJECT_SOURCE_DIR}/include)
+#   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include
+#     DESTINATION ${CMAKE_INSTALL_PREFIX})
+# endif()
 
 # rpath handling
 set(CMAKE_MACOSX_RPATH ON)
@@ -34,6 +34,23 @@ elseif(UNIX)
   set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
 endif()
 
+function(add_inc)
+  set(OPTIONS INNER)
+  set(ONE_VALUE_ARGS TARGET_NAME)
+  cmake_parse_arguments(ADD_INC
+    "${OPTIONS}" "${ONE_VALUE_ARGS}" "" ${ARGN})
+
+  if(EXISTS ${PROJECT_SOURCE_DIR}/${ADD_INC_TARGET_NAME})
+    include_directories(${PROJECT_SOURCE_DIR}/${ADD_INC_TARGET_NAME})
+    if(NOT ADD_INC_INNER)
+      install(DIRECTORY "${PROJECT_SOURCE_DIR}/${ADD_INC_TARGET_NAME}/" # trailing '/' is significant
+        DESTINATION include)
+    endif()
+  else()
+    message(FATAL_ERROR "${PROJECT_SOURCE_DIR}/${ADD_INC_TARGET_NAME} not exists.")
+  endif()
+endfunction()
+
 # add library target
 function(add_lib)
   set(OPTIONS INNER)
@@ -42,13 +59,12 @@ function(add_lib)
   cmake_parse_arguments(ADD_LIB
     "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
-  set(SRC_DIR ${PROJECT_SOURCE_DIR}/inner/lib/${ADD_LIB_TARGET_NAME})
-  if(NOT ADD_LIB_INNER)
-    set(SRC_DIR ${PROJECT_SOURCE_DIR}/lib/${ADD_LIB_TARGET_NAME})
-  endif()
-  set(SRC_LIST "")
   foreach(SRC_FILE ${ADD_LIB_SRC})
-    list(APPEND SRC_LIST ${SRC_DIR}/${SRC_FILE})
+    if(EXISTS ${PROJECT_SOURCE_DIR}/${SRC_FILE})
+      list(APPEND SRC_LIST ${PROJECT_SOURCE_DIR}/${SRC_FILE})
+    else()
+      message(FATAL_ERROR "${PROJECT_SOURCE_DIR}/${SRC_FILE} not exists.")
+    endif()
   endforeach()
 
   if(BUILD_SHARED_LIBS AND (NOT ADD_LIB_INNER))
@@ -58,15 +74,6 @@ function(add_lib)
       SOVERSION ${PROJECT_VERSION_MAJOR})
   else()
     add_library(${ADD_LIB_TARGET_NAME} STATIC ${SRC_LIST})
-  endif()
-
-  if(EXISTS ${PROJECT_SOURCE_DIR}/include)
-    target_include_directories(${ADD_LIB_TARGET_NAME} PUBLIC
-      ${PROJECT_SOURCE_DIR}/include)
-  endif()
-  if(EXISTS ${PROJECT_SOURCE_DIR}/inner/include)
-    target_include_directories(${ADD_LIB_TARGET_NAME} PUBLIC
-      ${PROJECT_SOURCE_DIR}/inner/include)
   endif()
 
   if(ADD_LIB_LINK_TO)
@@ -103,29 +110,19 @@ endfunction()
 function(add_bin)
   set(OPTIONS INNER)
   set(ONE_VALUE_ARGS TARGET_NAME)
-  set(MULTI_VALUE_ARGS SRC LINK_TO COMPILE_FLAGS LINK_FLAGS)
+  set(MULTI_VALUE_ARGS SRC INC LINK_TO COMPILE_FLAGS LINK_FLAGS)
   cmake_parse_arguments(ADD_BIN
     "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
-  set(SRC_DIR ${PROJECT_SOURCE_DIR}/inner/bin/${ADD_BIN_TARGET_NAME})
-  if(NOT ADD_BIN_INNER)
-    set(SRC_DIR ${PROJECT_SOURCE_DIR}/bin/${ADD_BIN_TARGET_NAME})
-  endif()
-  set(SRC_LIST "")
   foreach(SRC_FILE ${ADD_BIN_SRC})
-    list(APPEND SRC_LIST ${SRC_DIR}/${SRC_FILE})
+    if(EXISTS ${PROJECT_SOURCE_DIR}/${SRC_FILE})
+      list(APPEND SRC_LIST ${PROJECT_SOURCE_DIR}/${SRC_FILE})
+    else()
+      message(FATAL_ERROR "${PROJECT_SOURCE_DIR}/${SRC_FILE} not exists.")
+    endif()
   endforeach()
 
   add_executable(${ADD_BIN_TARGET_NAME} ${SRC_LIST})
-
-  if(EXISTS ${PROJECT_SOURCE_DIR}/include)
-    target_include_directories(${ADD_BIN_TARGET_NAME} PUBLIC
-      ${PROJECT_SOURCE_DIR}/include)
-  endif()
-  if(EXISTS ${PROJECT_SOURCE_DIR}/inner/include)
-    target_include_directories(${ADD_BIN_TARGET_NAME} PUBLIC
-      ${PROJECT_SOURCE_DIR}/inner/include)
-  endif()
 
   if(ADD_BIN_LINK_TO)
     target_link_libraries(${ADD_BIN_TARGET_NAME} ${ADD_BIN_LINK_TO})
