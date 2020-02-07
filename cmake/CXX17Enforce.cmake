@@ -107,11 +107,16 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
 
   # extra release flags
   # -----------------------------------------------------------------
-  # -fstack-protector-strong -fno-plt
+  # -fstack-protector-strong[-fstack-protector] -fno-plt
   # -----------------------------------------------------------------
   check_cxx_compiler_flag("-fstack-protector-strong" CXX_COMPILER_HAS_FSTACK_PROTECTOR_STRONG)
   if(CXX_COMPILER_HAS_FSTACK_PROTECTOR_STRONG)
     list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-fstack-protector-strong")
+  else()
+    check_cxx_compiler_flag("-fstack-protector" CXX_COMPILER_HAS_FSTACK_PROTECTOR)
+    if(CXX_COMPILER_HAS_FSTACK_PROTECTOR)
+      list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-fstack-protector")
+    endif()
   endif()
 
   check_cxx_compiler_flag("-fno-plt" CXX_COMPILER_HAS_FNO_PLT)
