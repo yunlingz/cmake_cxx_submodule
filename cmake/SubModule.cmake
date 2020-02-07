@@ -20,11 +20,6 @@ if(NOT (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
   message(WARNING "We do not encourage you to build ${PROJECT_NAME} as a subproject")
 endif()
 
-# if(EXISTS ${PROJECT_SOURCE_DIR}/include)
-#   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include
-#     DESTINATION ${CMAKE_INSTALL_PREFIX})
-# endif()
-
 # rpath handling
 set(CMAKE_MACOSX_RPATH ON)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
