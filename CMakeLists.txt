@@ -28,25 +28,25 @@ include(${PROJECT_SOURCE_DIR}/cmake/SubModule.cmake)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/gtest EXCLUDE_FROM_ALL)
 
-add_inc(TARGET_NAME include)
-add_inc(TARGET_NAME inner/include INNER)
-# add_inc(TARGET_NAME inner/include_2)
+add_inc(TGT include)
+add_inc(TGT inner/include PVT)
+# add_inc(TGT inner/include_2)
 
-add_bin(TARGET_NAME sub_test
+add_bin(TGT sub_test
   SRC bin/sub_test/test.cc
-  LINK_TO example_sub)
-# add_lib(TARGET_NAME some_bin_not_exist) # should trigger warning
+  DEP example_sub)
+# add_lib(TGT some_bin_not_exist) # should trigger warning
 
-add_lib(TARGET_NAME example_add INNER
+add_lib(TGT example_add PVT
   SRC inner/lib/example_add/add_one.cc inner/lib/example_add/add.cc
-  LINK_TO
+  DEP
   COMPILE_FLAGS -fexceptions -frtti)
 
-add_lib(TARGET_NAME example_sub
+add_lib(TGT example_sub
   SRC lib/example_sub/sub.cc
-  LINK_TO example_add)
-# add_lib(TARGET_NAME some_lib_not_exist) # should trigger warning
+  DEP example_add)
+# add_lib(TGT some_lib_not_exist) # should trigger warning
 
-add_bin(TARGET_NAME run_test INNER
+add_bin(TGT run_test PVT
   SRC inner/bin/run_test/test_1.cc inner/bin/run_test/test_2.cc
-  LINK_TO gtest_main)
+  DEP gtest_main)
