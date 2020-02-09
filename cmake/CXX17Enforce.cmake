@@ -73,7 +73,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
 
   # basic debug flags
   # -----------------------------------------------------------------
-  # -g -Og
+  # -g -Og[-O0]
   # -----------------------------------------------------------------
   check_cxx_compiler_flag("-g" CXX_COMPILER_HAS_G)
   if(CXX_COMPILER_HAS_G)
@@ -83,6 +83,11 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
   check_cxx_compiler_flag("-Og" CXX_COMPILER_HAS_OG)
   if(CXX_COMPILER_HAS_OG)
     list(APPEND CUSTOM_CMAKE_CXX_FLAGS_DEBUG "-Og")
+  else()
+    check_cxx_compiler_flag("-O0" CXX_COMPILER_HAS_O0)
+    if(CXX_COMPILER_HAS_O0)
+      list(APPEND CUSTOM_CMAKE_CXX_FLAGS_DEBUG "-O0")
+    endif()
   endif()
 
   # basic release flags

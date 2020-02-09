@@ -16,13 +16,17 @@ cmake_minimum_required(VERSION 3.10)
 
 project(example
   VERSION 0.0.1
-  LANGUAGES CXX)
+  LANGUAGES CXX C)
 
 include(${PROJECT_SOURCE_DIR}/cmake/CXX17Enforce.cmake)
-
 message(STATUS "${CMAKE_CXX_FLAGS}")
 message(STATUS "${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS "${CMAKE_CXX_FLAGS_RELEASE}")
+
+include(${PROJECT_SOURCE_DIR}/cmake/GNU99Enforce.cmake)
+message(STATUS "${CMAKE_C_FLAGS}")
+message(STATUS "${CMAKE_C_FLAGS_DEBUG}")
+message(STATUS "${CMAKE_C_FLAGS_RELEASE}")
 
 include(${PROJECT_SOURCE_DIR}/cmake/SubModule.cmake)
 
@@ -50,3 +54,6 @@ add_lib(TGT example_sub
 add_bin(TGT run_test PVT
   SRC inner/bin/run_test/test_1.cc inner/bin/run_test/test_2.cc
   DEP gtest_main)
+
+add_bin(TGT c_bin PVT
+  SRC bin/c_bin/main.c)
