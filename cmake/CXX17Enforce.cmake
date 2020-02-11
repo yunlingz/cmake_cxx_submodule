@@ -93,21 +93,16 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
   # basic release flags
   # -----------------------------------------------------------------
   # -DNDEBUG
-  # -O3 -ftree-vectorize -fomit-frame-pointer
+  # -O2 -fomit-frame-pointer
   # -----------------------------------------------------------------
   check_cxx_compiler_flag("-DNDEBUG" CXX_COMPILER_HAS_DNDEBUG)
   if(CXX_COMPILER_HAS_DNDEBUG)
     list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG")
   endif()
 
-  check_cxx_compiler_flag("-O3" CXX_COMPILER_HAS_O3)
-  if(CXX_COMPILER_HAS_O3)
-    list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-O3")
-  endif()
-
-  check_cxx_compiler_flag("-ftree-vectorize" CXX_COMPILER_HAS_FTREE_VECTORIZE)
-  if(CXX_COMPILER_HAS_FTREE_VECTORIZE)
-    list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-ftree-vectorize")
+  check_cxx_compiler_flag("-O2" CXX_COMPILER_HAS_O2)
+  if(CXX_COMPILER_HAS_O2)
+    list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-O2")
   endif()
 
   check_cxx_compiler_flag("-fomit-frame-pointer" CXX_COMPILER_HAS_FOMIT_FRAME_POINTER)
