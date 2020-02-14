@@ -93,6 +93,7 @@ function(add_lib)
       COMPONENT ${ADD_LIB_TGT})
   endif()
 
+  # --- experiential auto pkg-config file generator ---
   if(BUILD_SHARED_LIBS AND (NOT ADD_LIB_PVT))
     configure_file(${PROJECT_SOURCE_DIR}/cmake/libtemplate.pc.in
       lib${ADD_LIB_TGT}.pc @ONLY)
