@@ -8,20 +8,20 @@ BasedOnStyle: Google
 # header files should end in .hh
 # include guard: <PROJECT>_<PATH>_<FILE>_HH_
 
-# align pointer to the left
-DerivePointerAlignment: false
-PointerAlignment: Left
-
-# currently, code should target c++17
-Standard: Cpp11
-Cpp11BracedListStyle: true
-
 # indent 2 spaces at a time
 UseTab: Never
 AccessModifierOffset: -2
 ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4
 IndentWidth: 2
+
+# align pointer to the right
+DerivePointerAlignment: false
+PointerAlignment: Right
+
+# currently, code should target c++17
+Standard: Cpp11
+Cpp11BracedListStyle: true
 
 # no hard column limit
 # respect line breaking decisions of developer
