@@ -47,11 +47,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
   check_cxx_compiler_flag("-Wextra" CXX_COMPILER_HAS_WEXTRA)
   if(CXX_COMPILER_HAS_WEXTRA)
     list(APPEND CUSTOM_CMAKE_CXX_FLAGS "-Wextra")
-  else()
-    check_cxx_compiler_flag("-W" CXX_COMPILER_HAS_OLDER_WEXTRA)
-    if(CXX_COMPILER_HAS_OLDER_WEXTRA)
-      list(APPEND CUSTOM_CMAKE_CXX_FLAGS "-W")
-    endif()
   endif()
 
   # disable exception and rtti
@@ -73,7 +68,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
 
   # basic debug flags
   # -----------------------------------------------------------------
-  # -g -Og[-O0]
+  # -g -Og
   # -----------------------------------------------------------------
   check_cxx_compiler_flag("-g" CXX_COMPILER_HAS_G)
   if(CXX_COMPILER_HAS_G)
@@ -83,11 +78,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
   check_cxx_compiler_flag("-Og" CXX_COMPILER_HAS_OG)
   if(CXX_COMPILER_HAS_OG)
     list(APPEND CUSTOM_CMAKE_CXX_FLAGS_DEBUG "-Og")
-  else()
-    check_cxx_compiler_flag("-O0" CXX_COMPILER_HAS_O0)
-    if(CXX_COMPILER_HAS_O0)
-      list(APPEND CUSTOM_CMAKE_CXX_FLAGS_DEBUG "-O0")
-    endif()
   endif()
 
   # basic release flags
@@ -112,21 +102,11 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
 
   # extra release flags
   # -----------------------------------------------------------------
-  # -fstack-protector-strong[-fstack-protector] -fno-plt
+  # -fstack-protector-strong
   # -----------------------------------------------------------------
   check_cxx_compiler_flag("-fstack-protector-strong" CXX_COMPILER_HAS_FSTACK_PROTECTOR_STRONG)
   if(CXX_COMPILER_HAS_FSTACK_PROTECTOR_STRONG)
     list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-fstack-protector-strong")
-  else()
-    check_cxx_compiler_flag("-fstack-protector" CXX_COMPILER_HAS_FSTACK_PROTECTOR)
-    if(CXX_COMPILER_HAS_FSTACK_PROTECTOR)
-      list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-fstack-protector")
-    endif()
-  endif()
-
-  check_cxx_compiler_flag("-fno-plt" CXX_COMPILER_HAS_FNO_PLT)
-  if(CXX_COMPILER_HAS_FNO_PLT)
-    list(APPEND CUSTOM_CMAKE_CXX_FLAGS_RELEASE "-fno-plt")
   endif()
 
   string(REPLACE ";" " " CUSTOM_CMAKE_CXX_FLAGS_DEBUG "${CUSTOM_CMAKE_CXX_FLAGS_DEBUG}")

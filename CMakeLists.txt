@@ -30,7 +30,7 @@ message(STATUS "${CMAKE_C_FLAGS_RELEASE}")
 
 include(${PROJECT_SOURCE_DIR}/cmake/SubModule.cmake)
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/gtest EXCLUDE_FROM_ALL)
+# add_subdirectory(${PROJECT_SOURCE_DIR}/gtest EXCLUDE_FROM_ALL)
 
 add_inc(TGT include)
 add_inc(TGT inner/include PVT)

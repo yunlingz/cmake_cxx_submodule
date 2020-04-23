@@ -1,45 +1,10 @@
 # please follow the google c++ style guide
-# unless an exception is listed below
 # see https://google.github.io/styleguide/cppguide.html
 Language: Cpp
 BasedOnStyle: Google
 
-# source files should end in .cc
-# header files should end in .hh
-# include guard: <PROJECT>_<PATH>_<FILE>_HH_
-
-# indent 2 spaces at a time
-UseTab: Never
-AccessModifierOffset: -2
-ConstructorInitializerIndentWidth: 4
-ContinuationIndentWidth: 4
-IndentWidth: 2
-
-# align pointer to the right
 DerivePointerAlignment: false
 PointerAlignment: Right
 
-# currently, code should target c++17
 Standard: Cpp11
 Cpp11BracedListStyle: true
-
-# no hard column limit
-# respect line breaking decisions of developer
-# try not to exceed 80 chars
-ColumnLimit: 0
-
-# alignment
-AlignAfterOpenBracket: Align
-AlignConsecutiveAssignments: false
-AlignConsecutiveDeclarations: false
-AlignEscapedNewlines: Left
-AlignOperands: true
-AlignTrailingComments: true
-
-# merge
-AllowShortBlocksOnASingleLine: false
-AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: All
-AllowShortLambdasOnASingleLine: All
-AllowShortIfStatementsOnASingleLine: Never
-AllowShortLoopsOnASingleLine: false

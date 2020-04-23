@@ -94,12 +94,12 @@ function(add_lib)
   endif()
 
   # --- experiential auto pkg-config file generator ---
-  if(BUILD_SHARED_LIBS AND (NOT ADD_LIB_PVT))
-    configure_file(${PROJECT_SOURCE_DIR}/cmake/libtemplate.pc.in
-      lib${ADD_LIB_TGT}.pc @ONLY)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${ADD_LIB_TGT}.pc
-      DESTINATION lib/pkgconfig)
-  endif()
+  # if(BUILD_SHARED_LIBS AND (NOT ADD_LIB_PVT))
+  #   configure_file(${PROJECT_SOURCE_DIR}/cmake/libtemplate.pc.in
+  #     lib${ADD_LIB_TGT}.pc @ONLY)
+  #   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${ADD_LIB_TGT}.pc
+  #     DESTINATION lib/pkgconfig)
+  # endif()
 endfunction()
 
 # add executable target
